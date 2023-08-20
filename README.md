@@ -1,6 +1,6 @@
 # MovementRecorder Forge Mod 1.8.9
 
-MovementRecorder is a Minecraft Forge Mod for version 1.8.9 that allows you to record and playback player movements. This mod is intended to enhance your gameplay experience by enabling you to document and recreate movements within the game.
+MovementRecorder is a Minecraft Forge Mod for version 1.8.9 that allows you to record and playback player movements. This mod is intended to enhance your gameplay experience by enabling you to record and replay movements within the game.
 
 ## Installation
 
