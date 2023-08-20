@@ -1,5 +1,4 @@
 plugins {
-    kotlin("jvm") version "1.9.0"
     id("cc.polyfrost.loom") version "0.10.0.5"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -31,8 +30,6 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
     modRuntimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.2")
-
-    embed("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
 }
 
 blossom {
@@ -79,7 +76,6 @@ tasks {
     }
 
     shadowJar {
-        relocate("kotlin", "xyz.yuro.movementrecorder.relocate.kotlin")
         configurations = listOf(embed)
     }
 
@@ -95,7 +91,7 @@ tasks {
     }
     register("removeShadowArtifact", Delete::class) {
         doLast {
-            project.file("build/libs/movementrecorder-$version-all.jar").delete()
+            project.file("build/libs/MovementRecorder-$version-all.jar").delete()
         }
     }
 
@@ -107,4 +103,3 @@ java {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-kotlin.jvmToolchain(8)
