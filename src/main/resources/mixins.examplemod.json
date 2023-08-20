@@ -1,0 +1,8 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "package": "de.tomjuri.examplemod.mixin",
+  "client": [
+    "MinecraftInvoker",
+  ],
+  "verbose": true
+}
