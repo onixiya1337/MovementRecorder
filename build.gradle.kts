@@ -89,6 +89,16 @@ tasks {
             expand(mapOf("version" to version))
         }
     }
+
+    build.configure {
+        dependsOn("removeShadowArtifact")
+    }
+    register("removeShadowArtifact", Delete::class) {
+        doLast {
+            project.file("build/libs/movementrecorder-$version-all.jar").delete()
+        }
+    }
+
 }
 
 java {
