@@ -6,7 +6,7 @@ plugins {
     id("net.kyori.blossom") version "1.3.1"
 }
 
-group = "de.tomjuri"
+group = "xyz.yuro"
 version = "1.0.0"
 
 repositories {
@@ -55,7 +55,7 @@ loom {
 
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        mixinConfig("mixins.examplemod.json")
+        mixinConfig("mixins.movementrecorder.json")
     }
 }
 
@@ -67,7 +67,7 @@ tasks {
                         "TweakOrder" to "0",
                         "ForceLoadAsMod" to true,
                         "TweakClass" to "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker",
-                        "MixinConfigs" to "mixins.examplemod.json"
+                        "MixinConfigs" to "mixins.movementrecorder.json"
                 )
         )
         dependsOn(shadowJar)
@@ -79,7 +79,7 @@ tasks {
     }
 
     shadowJar {
-        relocate("kotlin", "de.tomjuri.examplemod.relocate.kotlin")
+        relocate("kotlin", "xyz.yuro.movementrecorder.relocate.kotlin")
         configurations = listOf(embed)
     }
 

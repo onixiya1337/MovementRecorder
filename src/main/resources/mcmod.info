@@ -1,14 +1,14 @@
 [
   {
-    "modid": "examplemod",
-    "name": "ExampleMod",
-    "description": "Exmaple Mod!",
+    "modid": "movementrecorder",
+    "name": "MovementRecorder",
+    "description": "Movement Recorder Mod",
     "version": "${version}",
     "mcversion": "1.8.9",
     "url": "",
     "updateUrl": "",
     "authorList": [
-      "TomJuri"
+      "yuro"
     ],
     "credits": "",
     "logoFile": "",
