@@ -17,12 +17,12 @@ public class LogUtils {
     }
     public static void sendError(String message) {
         sendLog(new ChatComponentText(
-                EnumChatFormatting.DARK_RED + "Movement Recorder " + EnumChatFormatting.RED + "» " + message
+                EnumChatFormatting.DARK_RED + "Movement Recorder " + EnumChatFormatting.DARK_GRAY + "» " + EnumChatFormatting.RED + message
         ));
     }
     public static void sendSuccess(String message) {
         sendLog(new ChatComponentText(
-                EnumChatFormatting.DARK_GREEN + "Movement Recorder " + EnumChatFormatting.GREEN + "» " + message
+                EnumChatFormatting.DARK_GREEN + "Movement Recorder " + EnumChatFormatting.DARK_GRAY + "» " + EnumChatFormatting.GREEN + message
         ));
     }
 }
