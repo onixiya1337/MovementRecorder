@@ -1,12 +1,6 @@
 package xyz.yuro.movementrecorder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
-
-import static cc.polyfrost.oneconfig.libs.universal.UMath.wrapAngleTo180;
 
 public class AngleUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
