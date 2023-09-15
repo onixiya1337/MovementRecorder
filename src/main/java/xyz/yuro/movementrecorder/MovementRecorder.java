@@ -16,8 +16,8 @@ import java.util.List;
 public class MovementRecorder {
     private static List<Movement> movements = new ArrayList<>();
     private static boolean isMovementReading = false;
-    public static boolean isMovementPlaying = false;
-    public static boolean isMovementRecording = false;
+    private static boolean isMovementPlaying = false;
+    private static boolean isMovementRecording = false;
     private static int playingIndex = 0;
     private static String recordingName = "";
     static Minecraft mc = Minecraft.getMinecraft();
