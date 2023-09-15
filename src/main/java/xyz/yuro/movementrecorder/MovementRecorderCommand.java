@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MovementRecorderCommand implements ICommand {
-    public static ArrayList<String> aliases = new ArrayList<>(Arrays.asList("movrec", "movementrecorder"));
-    public static ArrayList<String> tabcompletion = new ArrayList<>(Arrays.asList("start", "stop", "play", "delete", "list"));
+    protected static ArrayList<String> aliases = new ArrayList<>(Arrays.asList("movrec", "movementrecorder"));
+    protected static ArrayList<String> tabCompletion = new ArrayList<>(Arrays.asList("start", "stop", "play", "delete", "list"));
 
     @Override
     public String getCommandName() {
@@ -61,7 +61,7 @@ public class MovementRecorderCommand implements ICommand {
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
-        return tabcompletion;
+        return tabCompletion;
     }
 
     @Override
