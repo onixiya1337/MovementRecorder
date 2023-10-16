@@ -3,10 +3,11 @@ plugins {
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1"
+    id("maven-publish")
 }
 
 group = "xyz.yuro"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -95,6 +96,17 @@ tasks {
         }
     }
 
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "xyz.yuro"
+            artifactId = "MovementRecorder"
+            version = project.version.toString()
+            from(components["java"])
+        }
+    }
 }
 
 java {
