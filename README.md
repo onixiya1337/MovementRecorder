@@ -19,6 +19,13 @@ To use the MovementRecorder mod, you can utilize the following commands in the M
 - `/movementrecorder list`: Lists all recorded movements.
 - `/movementrecorder delete <name>`: Deletes the recorded movement.
 
+## Implementation
+
+You can use this mod as a dependency in your own project by adding the following line to your `build.gradle.kts` file:
+```kotlin
+modImplementation("com.github.onixiya1337:MovementRecorder:master-SNAPSHOT")
+```
+
 ## Contributing
 
 Contributions to the MovementRecorder mod are welcome! If you find any issues, have suggestions for improvements, or want to contribute new features, feel free to create an [issue](https://github.com/onixiya1337/MovementRecorder/issues) or submit a [pull request](https://github.com/onixiya1337/MovementRecorder/pulls).
