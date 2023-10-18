@@ -15,9 +15,9 @@ import java.util.List;
 
 public class MovementRecorder {
     private static List<Movement> movements = new ArrayList<>();
-    private static boolean isMovementReading = false;
-    private static boolean isMovementPlaying = false;
     private static boolean isMovementRecording = false;
+    private static boolean isMovementPlaying = false;
+    private static boolean isMovementReading = false;
     private static int playingIndex = 0;
     private static String recordingName = "";
     static Minecraft mc = Minecraft.getMinecraft();
@@ -316,5 +316,17 @@ public class MovementRecorder {
                 mc.thePlayer.rotationYaw,
                 mc.thePlayer.rotationPitch
         );
+    }
+
+    public static boolean isRecording() {
+        return isMovementRecording;
+    }
+
+    public static boolean isPlaying() {
+        return isMovementPlaying;
+    }
+
+    public static boolean isReading() {
+        return isMovementReading;
     }
 }
