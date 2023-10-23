@@ -18,6 +18,7 @@ public class MovementRecorder {
     private static boolean isMovementRecording = false;
     private static boolean isMovementPlaying = false;
     private static boolean isMovementReading = false;
+    private static int currentDelay = 0;
     private static int playingIndex = 0;
     private static String recordingName = "";
     static Minecraft mc = Minecraft.getMinecraft();
@@ -35,9 +36,10 @@ public class MovementRecorder {
         private final boolean attack;
         private final float yaw;
         private final float pitch;
+        private int delay;
 
         public Movement(boolean forward, boolean left, boolean backwards, boolean right, boolean sneak, boolean sprint, boolean jump,
-                        boolean attack, float yaw, float pitch) {
+                        boolean attack, float yaw, float pitch, int delay) {
             this.forward = forward;
             this.left = left;
             this.backwards = backwards;
@@ -48,11 +50,12 @@ public class MovementRecorder {
             this.attack = attack;
             this.yaw = yaw;
             this.pitch = pitch;
+            this.delay = delay;
         }
         public String toCsv() {
             return forward + ";" + left + ";" + backwards + ";" + right + ";" +
                     sneak + ";" + sprint + ";" + jump + ";" + attack + ";" +
-                    yaw + ";" + pitch;
+                    yaw + ";" + pitch + ";" + delay;
         }
     }
 
@@ -64,6 +67,23 @@ public class MovementRecorder {
             return;
 
         Movement currentMovement = getCurrentMovement();
+
+        if (!movements.isEmpty()) {
+            Movement previousMovement = movements.get(movements.size() - 1);
+            if (currentMovement.forward == previousMovement.forward &&
+                    currentMovement.left == previousMovement.left &&
+                    currentMovement.backwards == previousMovement.backwards &&
+                    currentMovement.right == previousMovement.right &&
+                    currentMovement.sneak == previousMovement.sneak &&
+                    currentMovement.sprint == previousMovement.sprint &&
+                    currentMovement.jump == previousMovement.jump &&
+                    currentMovement.attack == previousMovement.attack &&
+                    currentMovement.yaw == previousMovement.yaw &&
+                    currentMovement.pitch == previousMovement.pitch) {
+                previousMovement.delay++;
+                return;
+            }
+        }
         movements.add(currentMovement);
     }
 
@@ -87,7 +107,12 @@ public class MovementRecorder {
         setPlayerMovement(movement);
         rotateDuringPlaying.easeTo(movement.yaw, movement.pitch, 49);
 
+        if (currentDelay < movement.delay) {
+            currentDelay++;
+            return;
+        }
         playingIndex++;
+        currentDelay = 0;
         if (playingIndex >= movements.size()) {
             isMovementPlaying = false;
             resetTimers();
@@ -121,6 +146,7 @@ public class MovementRecorder {
         }
         movements.clear();
         playingIndex = 0;
+        currentDelay = 0;
         recordingName = name;
         isMovementPlaying = false;
         isMovementRecording = true;
@@ -130,6 +156,7 @@ public class MovementRecorder {
 
     public static void stopRecording() {
         playingIndex = 0;
+        currentDelay = 0;
         resetTimers();
         KeyBindUtils.stopMovement();
         if (isMovementRecording) {
@@ -167,6 +194,7 @@ public class MovementRecorder {
                 if (!isMovementReading) return;
                 String[] split = line.split(";");
                 Movement movement = new Movement(
+                        Boolean.parseBoolean(split[0]),
                         Boolean.parseBoolean(split[1]),
                         Boolean.parseBoolean(split[2]),
                         Boolean.parseBoolean(split[3]),
@@ -174,9 +202,9 @@ public class MovementRecorder {
                         Boolean.parseBoolean(split[5]),
                         Boolean.parseBoolean(split[6]),
                         Boolean.parseBoolean(split[7]),
-                        Boolean.parseBoolean(split[8]),
+                        Float.parseFloat(split[8]),
                         Float.parseFloat(split[9]),
-                        Float.parseFloat(split[10])
+                        Integer.parseInt(split[10])
                 );
                 movements.add(movement);
             }
@@ -211,10 +239,11 @@ public class MovementRecorder {
                     return;
                 }
             }
+            if (MovementRecorderConfig.removeEndDelay)
+                movements.get(movements.size() - 1).delay = 0;
             try (PrintWriter pw = new PrintWriter(recordingFile)) {
-                for (int i = 0; i < movements.size(); i++) {
-                    Movement movement = movements.get(i);
-                    pw.println(i + ";" + movement.toCsv());
+                for (Movement movement : movements) {
+                    pw.println(movement.toCsv());
                 }
                 LogUtils.sendSuccess("Recording " + recordingName + " has been saved.");
             } catch (Exception e) {
@@ -225,6 +254,7 @@ public class MovementRecorder {
             LogUtils.sendError("An error occurred while creating the recording file.");
             e.printStackTrace();
         }
+        movements.clear();
     }
 
     public static void deleteRecording(String name) {
@@ -314,7 +344,8 @@ public class MovementRecorder {
                 mc.gameSettings.keyBindJump.isKeyDown(),
                 mc.gameSettings.keyBindAttack.isKeyDown(),
                 mc.thePlayer.rotationYaw,
-                mc.thePlayer.rotationPitch
+                mc.thePlayer.rotationPitch,
+                0
         );
     }
 

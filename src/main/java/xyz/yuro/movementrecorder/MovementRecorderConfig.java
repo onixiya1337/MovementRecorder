@@ -3,6 +3,7 @@ package xyz.yuro.movementrecorder;
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.Button;
 import cc.polyfrost.oneconfig.config.annotations.Page;
+import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cc.polyfrost.oneconfig.config.annotations.Text;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
@@ -37,4 +38,10 @@ public class MovementRecorderConfig extends Config {
     Runnable stopRecording = () -> {
         MovementRecorder.stopRecording();
     };
+
+    @Switch(
+            name = "Remove delay at the end of the recording",
+            description = "Removes the delay at the end of the recording, so you don't have to wait for the recording to end."
+    )
+    public static boolean removeEndDelay = false;
 }
