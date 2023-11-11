@@ -18,6 +18,7 @@ public class MovementRecorder {
     private static boolean isMovementRecording = false;
     private static boolean isMovementPlaying = false;
     private static boolean isMovementReading = false;
+    private static boolean attackKeyPressed = false;
     private static int currentDelay = 0;
     private static int playingIndex = 0;
     private static String recordingName = "";
@@ -32,20 +33,22 @@ public class MovementRecorder {
         private final boolean right;
         private final boolean sneak;
         private final boolean sprint;
+        private final boolean fly;
         private final boolean jump;
         private final boolean attack;
         private final float yaw;
         private final float pitch;
         private int delay;
 
-        public Movement(boolean forward, boolean left, boolean backwards, boolean right, boolean sneak, boolean sprint, boolean jump,
-                        boolean attack, float yaw, float pitch, int delay) {
+        public Movement(boolean forward, boolean left, boolean backwards, boolean right, boolean sneak, boolean sprint, boolean fly,
+                        boolean jump, boolean attack, float yaw, float pitch, int delay) {
             this.forward = forward;
             this.left = left;
             this.backwards = backwards;
             this.right = right;
             this.sneak = sneak;
             this.sprint = sprint;
+            this.fly = fly;
             this.jump = jump;
             this.attack = attack;
             this.yaw = yaw;
@@ -54,8 +57,8 @@ public class MovementRecorder {
         }
         public String toCsv() {
             return forward + ";" + left + ";" + backwards + ";" + right + ";" +
-                    sneak + ";" + sprint + ";" + jump + ";" + attack + ";" +
-                    yaw + ";" + pitch + ";" + delay;
+                    sneak + ";" + sprint + ";" + fly + ";" + jump + ";" +
+                    attack + ";" + yaw + ";" + pitch + ";" + delay;
         }
     }
 
@@ -76,6 +79,7 @@ public class MovementRecorder {
                     currentMovement.right == previousMovement.right &&
                     currentMovement.sneak == previousMovement.sneak &&
                     currentMovement.sprint == previousMovement.sprint &&
+                    currentMovement.fly == previousMovement.fly &&
                     currentMovement.jump == previousMovement.jump &&
                     currentMovement.attack == previousMovement.attack &&
                     currentMovement.yaw == previousMovement.yaw &&
@@ -111,6 +115,7 @@ public class MovementRecorder {
             currentDelay++;
             return;
         }
+        attackKeyPressed = false;
         playingIndex++;
         currentDelay = 0;
         if (playingIndex >= movements.size()) {
@@ -157,6 +162,7 @@ public class MovementRecorder {
     public static void stopRecording() {
         playingIndex = 0;
         currentDelay = 0;
+        attackKeyPressed = false;
         resetTimers();
         KeyBindUtils.stopMovement();
         if (isMovementRecording) {
@@ -175,9 +181,6 @@ public class MovementRecorder {
     }
 
     public static void playRecording(String name) {
-        movements.clear();
-        playingIndex = 0;
-        resetTimers();
         if (isMovementRecording) {
             LogUtils.sendError("You are recording now!");
             LogUtils.sendError("Type /movrec stop to stop recording.");
@@ -187,6 +190,9 @@ public class MovementRecorder {
             LogUtils.sendError("The recording is playing already.");
             return;
         }
+        movements.clear();
+        playingIndex = 0;
+        resetTimers();
         isMovementReading = true;
         try {
             List<String> lines = java.nio.file.Files.readAllLines(new File(mc.mcDataDir + "\\movementrecorder\\" + name + ".movement").toPath());
@@ -202,9 +208,10 @@ public class MovementRecorder {
                         Boolean.parseBoolean(split[5]),
                         Boolean.parseBoolean(split[6]),
                         Boolean.parseBoolean(split[7]),
-                        Float.parseFloat(split[8]),
+                        Boolean.parseBoolean(split[8]),
                         Float.parseFloat(split[9]),
-                        Integer.parseInt(split[10])
+                        Float.parseFloat(split[10]),
+                        Integer.parseInt(split[11])
                 );
                 movements.add(movement);
             }
@@ -327,9 +334,12 @@ public class MovementRecorder {
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindRight.getKeyCode(), movement.right);
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindSneak.getKeyCode(), movement.sneak);
         mc.thePlayer.setSprinting(movement.sprint);
+        if (mc.thePlayer.capabilities.allowFlying && mc.thePlayer.capabilities.isFlying != movement.fly)
+            mc.thePlayer.capabilities.isFlying = movement.fly;
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), movement.jump);
-        if (movement.attack) {
+        if (movement.attack && !attackKeyPressed) {
             KeyBindUtils.leftClick();
+            attackKeyPressed = true;
         }
     }
 
@@ -341,6 +351,7 @@ public class MovementRecorder {
                 mc.gameSettings.keyBindRight.isKeyDown(),
                 mc.gameSettings.keyBindSneak.isKeyDown(),
                 mc.thePlayer.isSprinting(),
+                mc.thePlayer.capabilities.isFlying,
                 mc.gameSettings.keyBindJump.isKeyDown(),
                 mc.gameSettings.keyBindAttack.isKeyDown(),
                 mc.thePlayer.rotationYaw,
