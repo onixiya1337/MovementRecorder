@@ -1,6 +1,5 @@
 package xyz.yuro.movementrecorder;
 
-import cc.polyfrost.oneconfig.libs.universal.UMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
