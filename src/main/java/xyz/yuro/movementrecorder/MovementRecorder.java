@@ -1,5 +1,6 @@
 package xyz.yuro.movementrecorder;
 
+import cc.polyfrost.oneconfig.libs.universal.UMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
@@ -21,6 +22,7 @@ public class MovementRecorder {
     private static boolean attackKeyPressed = false;
     private static int currentDelay = 0;
     private static int playingIndex = 0;
+    private static float yawDifference = 0;
     private static String recordingName = "";
     static Minecraft mc = Minecraft.getMinecraft();
     private static RotationUtils rotateBeforePlaying = new RotationUtils();
@@ -109,7 +111,8 @@ public class MovementRecorder {
 
         Movement movement = movements.get(playingIndex);
         setPlayerMovement(movement);
-        rotateDuringPlaying.easeTo(movement.yaw, movement.pitch, 49);
+        rotateDuringPlaying.easeTo(
+                MovementRecorderConfig.useRelativeYaw ? AngleUtils.normalizeAngle(movement.yaw - yawDifference) : movement.yaw, movement.pitch, 49);
 
         if (currentDelay < movement.delay) {
             currentDelay++;
@@ -224,7 +227,8 @@ public class MovementRecorder {
         isMovementReading = false;
         isMovementPlaying = true;
         Movement movement = movements.get(0);
-        rotateBeforePlaying.easeTo(movement.yaw, movement.pitch, 500);
+        yawDifference = AngleUtils.normalizeAngle(movement.yaw - AngleUtils.get360RotationYaw());
+        rotateBeforePlaying.easeTo((MovementRecorderConfig.useRelativeYaw ? mc.thePlayer.rotationYaw : movement.yaw), movement.pitch, 500);
     }
 
     private static void saveRecording() {
@@ -246,6 +250,8 @@ public class MovementRecorder {
                     return;
                 }
             }
+            if (MovementRecorderConfig.removeStartDelay)
+                movements.get(0).delay = 0;
             if (MovementRecorderConfig.removeEndDelay)
                 movements.get(movements.size() - 1).delay = 0;
             try (PrintWriter pw = new PrintWriter(recordingFile)) {

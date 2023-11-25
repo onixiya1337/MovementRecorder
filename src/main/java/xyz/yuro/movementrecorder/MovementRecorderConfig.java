@@ -14,6 +14,8 @@ public class MovementRecorderConfig extends Config {
     public MovementRecorderConfig() {
         super(new Mod("Movement Recorder", ModType.UTIL_QOL), "movementrecorder.json");
         initialize();
+        this.hideIf("_startRecording", () -> MovementRecorder.isRecording());
+        this.hideIf("_stopRecording", () -> !MovementRecorder.isRecording());
     }
 
     @Page(name = "Recordings", location = PageLocation.TOP)
@@ -27,7 +29,7 @@ public class MovementRecorderConfig extends Config {
 
     @Button(name = "Start recording", text = "Start"
     )
-    Runnable startRecording = () -> {
+    Runnable _startRecording = () -> {
         if (recordingNameGUI == null) return;
         Minecraft.getMinecraft().thePlayer.closeScreen();
         MovementRecorder.startRecording(recordingNameGUI);
@@ -35,13 +37,25 @@ public class MovementRecorderConfig extends Config {
 
     @Button(name = "Stop recording", text = "Stop"
     )
-    Runnable stopRecording = () -> {
+    Runnable _stopRecording = () -> {
         MovementRecorder.stopRecording();
     };
+
+    @Switch(
+            name = "Remove delay at the beginning of the recording",
+            description = "Removes the delay at the beginning of the recording, so it starts playing immediately."
+    )
+    public static boolean removeStartDelay = true;
 
     @Switch(
             name = "Remove delay at the end of the recording",
             description = "Removes the delay at the end of the recording, so you don't have to wait for the recording to end."
     )
-    public static boolean removeEndDelay = false;
+    public static boolean removeEndDelay = true;
+
+    @Switch(
+            name = "Use relative yaw while playing",
+            description = "Doesn't use fixed yaw from the recording while playing it, but instead uses the yaw relative to the player's yaw."
+    )
+    public static boolean useRelativeYaw = false;
 }
