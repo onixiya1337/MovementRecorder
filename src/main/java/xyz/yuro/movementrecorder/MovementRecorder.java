@@ -1,6 +1,5 @@
 package xyz.yuro.movementrecorder;
 
-import cc.polyfrost.oneconfig.utils.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MovementRecorder {
     private static List<Movement> movements = new ArrayList<>();
