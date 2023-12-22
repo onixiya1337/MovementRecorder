@@ -8,7 +8,10 @@ import cc.polyfrost.oneconfig.config.annotations.Text;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.PageLocation;
+import cc.polyfrost.oneconfig.utils.Multithreading;
 import net.minecraft.client.Minecraft;
+
+import java.util.concurrent.TimeUnit;
 
 public class MovementRecorderConfig extends Config {
     public MovementRecorderConfig() {
@@ -30,9 +33,16 @@ public class MovementRecorderConfig extends Config {
     @Button(name = "Start recording", text = "Start"
     )
     Runnable _startRecording = () -> {
-        if (recordingNameGUI == null) return;
-        Minecraft.getMinecraft().thePlayer.closeScreen();
-        MovementRecorder.startRecording(recordingNameGUI);
+        if (recordingNameGUI == null || recordingNameGUI.isEmpty()) {
+            LogUtils.sendError("Recording name cannot be empty!");
+            return;
+        }
+        Multithreading.schedule(() -> {
+            MovementRecorder.startRecording(recordingNameGUI);
+        }, 250L, TimeUnit.MILLISECONDS);
+        if (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().thePlayer != null) {
+            Minecraft.getMinecraft().thePlayer.closeScreen();
+        }
     };
 
     @Button(name = "Stop recording", text = "Stop"

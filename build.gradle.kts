@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.yuro"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -24,7 +24,7 @@ dependencies {
     mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
 
-    compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.2.0-alpha+")
+    compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.2.1-alpha+")
     embed("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
 
     compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")

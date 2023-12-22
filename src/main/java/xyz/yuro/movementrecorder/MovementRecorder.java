@@ -1,5 +1,6 @@
 package xyz.yuro.movementrecorder;
 
+import cc.polyfrost.oneconfig.utils.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.EnumChatFormatting;
@@ -12,13 +13,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MovementRecorder {
     private static List<Movement> movements = new ArrayList<>();
     private static boolean isMovementRecording = false;
     private static boolean isMovementPlaying = false;
     private static boolean isMovementReading = false;
-    private static boolean attackKeyPressed = false;
     private static int currentDelay = 0;
     private static int playingIndex = 0;
     private static float yawDifference = 0;
@@ -117,7 +118,6 @@ public class MovementRecorder {
             currentDelay++;
             return;
         }
-        attackKeyPressed = false;
         playingIndex++;
         currentDelay = 0;
         if (playingIndex >= movements.size()) {
@@ -164,7 +164,6 @@ public class MovementRecorder {
     public static void stopRecording() {
         playingIndex = 0;
         currentDelay = 0;
-        attackKeyPressed = false;
         resetTimers();
         KeyBindUtils.stopMovement();
         if (isMovementRecording) {
@@ -342,10 +341,9 @@ public class MovementRecorder {
         if (mc.thePlayer.capabilities.allowFlying && mc.thePlayer.capabilities.isFlying != movement.fly)
             mc.thePlayer.capabilities.isFlying = movement.fly;
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), movement.jump);
-        if (movement.attack && !attackKeyPressed) {
+        if (movement.attack && currentDelay == 0)
             KeyBindUtils.leftClick();
-            attackKeyPressed = true;
-        }
+        KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), movement.attack);
     }
 
     private Movement getCurrentMovement() {
