@@ -1,10 +1,7 @@
 package xyz.yuro.movementrecorder;
 
 import cc.polyfrost.oneconfig.config.Config;
-import cc.polyfrost.oneconfig.config.annotations.Button;
-import cc.polyfrost.oneconfig.config.annotations.Page;
-import cc.polyfrost.oneconfig.config.annotations.Switch;
-import cc.polyfrost.oneconfig.config.annotations.Text;
+import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.PageLocation;
@@ -63,9 +60,10 @@ public class MovementRecorderConfig extends Config {
     )
     public static boolean removeEndDelay = true;
 
-    @Switch(
-            name = "Use relative yaw while playing",
-            description = "Doesn't use fixed yaw from the recording while playing it, but instead uses the yaw relative to the player's yaw."
+    @Dropdown(
+            name = "Rotation Difference",
+            description = "The difference between the player's yaw and the recording's yaw.",
+            options = {"Closest 90°", "Recording's yaw", "Player's yaw (aka relative)"}
     )
-    public static boolean useRelativeYaw = false;
+    public static int rotationType = 0;
 }

@@ -109,8 +109,16 @@ public class MovementRecorder {
 
         Movement movement = movements.get(playingIndex);
         setPlayerMovement(movement);
-        rotateDuringPlaying.easeTo(
-                MovementRecorderConfig.useRelativeYaw ? AngleUtils.normalizeAngle(movement.yaw - yawDifference) : movement.yaw, movement.pitch, 49);
+
+        float calculatedYaw = 0;
+        if (MovementRecorderConfig.rotationType == 0) { // Closest 90°
+            calculatedYaw = movement.yaw + yawDifference;
+        } else if (MovementRecorderConfig.rotationType == 1) { // Recording's yaw
+            calculatedYaw = movement.yaw;
+        } else if (MovementRecorderConfig.rotationType == 2) { // Player's yaw (aka relative)
+            calculatedYaw = movement.yaw - yawDifference;
+        }
+        rotateDuringPlaying.easeTo(calculatedYaw, movement.pitch, 49);
 
         if (currentDelay < movement.delay) {
             currentDelay++;
@@ -223,8 +231,18 @@ public class MovementRecorder {
         isMovementReading = false;
         isMovementPlaying = true;
         Movement movement = movements.get(0);
-        yawDifference = AngleUtils.normalizeAngle(movement.yaw - AngleUtils.get360RotationYaw());
-        rotateBeforePlaying.easeTo((MovementRecorderConfig.useRelativeYaw ? mc.thePlayer.rotationYaw : movement.yaw), movement.pitch, 500);
+
+        float calculatedYaw = 0;
+        if (MovementRecorderConfig.rotationType == 0) { // Closest 90°
+            yawDifference = AngleUtils.normalizeAngle(AngleUtils.getClosest90() - movement.yaw);
+            calculatedYaw = movement.yaw + yawDifference;
+        } else if (MovementRecorderConfig.rotationType == 1) { // Recording's yaw
+            calculatedYaw = movement.yaw;
+        } else if (MovementRecorderConfig.rotationType == 2) { // Player's yaw (aka relative)
+            yawDifference = AngleUtils.normalizeAngle(movement.yaw - AngleUtils.get360RotationYaw());
+            calculatedYaw = mc.thePlayer.rotationYaw;
+        }
+        rotateBeforePlaying.easeTo(calculatedYaw, movement.pitch, 500);
     }
 
     private static void saveRecording() {
