@@ -32,7 +32,7 @@ Contributions to the MovementRecorder mod are welcome! If you find any issues, h
 
 ## License
 
-This mod is licensed under the [MIT License](LICENSE), which means you are free to use, modify, and distribute the code, provided you include the original license in your distribution.
+This mod is licensed under the [CC BY-NC-SA 4.0 License](LICENSE).
 
 ## Acknowledgments
 
