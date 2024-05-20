@@ -36,12 +36,13 @@ public class MovementRecorder {
         private final boolean fly;
         private final boolean jump;
         private final boolean attack;
+        private final boolean useItem;
         private final float yaw;
         private final float pitch;
         private int delay;
 
         public Movement(boolean forward, boolean left, boolean backwards, boolean right, boolean sneak, boolean sprint, boolean fly,
-                        boolean jump, boolean attack, float yaw, float pitch, int delay) {
+                        boolean jump, boolean attack, boolean useItem, float yaw, float pitch, int delay) {
             this.forward = forward;
             this.left = left;
             this.backwards = backwards;
@@ -51,6 +52,7 @@ public class MovementRecorder {
             this.fly = fly;
             this.jump = jump;
             this.attack = attack;
+            this.useItem = useItem;
             this.yaw = yaw;
             this.pitch = pitch;
             this.delay = delay;
@@ -58,7 +60,7 @@ public class MovementRecorder {
         public String toCsv() {
             return forward + ";" + left + ";" + backwards + ";" + right + ";" +
                     sneak + ";" + sprint + ";" + fly + ";" + jump + ";" +
-                    attack + ";" + yaw + ";" + pitch + ";" + delay;
+                    attack + ";" + useItem + ";" + yaw + ";" + pitch + ";" + delay;
         }
     }
 
@@ -82,6 +84,7 @@ public class MovementRecorder {
                     currentMovement.fly == previousMovement.fly &&
                     currentMovement.jump == previousMovement.jump &&
                     currentMovement.attack == previousMovement.attack &&
+                    currentMovement.useItem == previousMovement.useItem &&
                     currentMovement.yaw == previousMovement.yaw &&
                     currentMovement.pitch == previousMovement.pitch) {
                 previousMovement.delay++;
@@ -216,9 +219,10 @@ public class MovementRecorder {
                         Boolean.parseBoolean(split[6]),
                         Boolean.parseBoolean(split[7]),
                         Boolean.parseBoolean(split[8]),
-                        Float.parseFloat(split[9]),
+                        Boolean.parseBoolean(split[9]),
                         Float.parseFloat(split[10]),
-                        Integer.parseInt(split[11])
+                        Float.parseFloat(split[11]),
+                        Integer.parseInt(split[12])
                 );
                 movements.add(movement);
             }
@@ -357,9 +361,14 @@ public class MovementRecorder {
         if (mc.thePlayer.capabilities.allowFlying && mc.thePlayer.capabilities.isFlying != movement.fly)
             mc.thePlayer.capabilities.isFlying = movement.fly;
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), movement.jump);
-        if (movement.attack && currentDelay == 0)
-            KeyBindUtils.leftClick();
+        if (currentDelay == 0) {
+            if (movement.attack)
+                KeyBindUtils.leftClick();
+            if (movement.useItem)
+                KeyBindUtils.rightClick();
+        }
         KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), movement.attack);
+        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), movement.useItem);
     }
 
     private Movement getCurrentMovement() {
@@ -373,6 +382,7 @@ public class MovementRecorder {
                 mc.thePlayer.capabilities.isFlying,
                 mc.gameSettings.keyBindJump.isKeyDown(),
                 mc.gameSettings.keyBindAttack.isKeyDown(),
+                mc.gameSettings.keyBindUseItem.isKeyDown(),
                 mc.thePlayer.rotationYaw,
                 mc.thePlayer.rotationPitch,
                 0
